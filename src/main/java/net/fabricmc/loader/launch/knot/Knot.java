@@ -50,7 +50,7 @@ public final class Knot extends FabricLauncherBase {
 		this.gameJarFile = gameJarFile;
 	}
 
-	protected void init(String[] args) {
+	public void init(String[] args) {
 		setProperties(properties);
 
 		// configure fabric vars
