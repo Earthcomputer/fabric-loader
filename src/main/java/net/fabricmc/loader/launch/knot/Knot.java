@@ -212,7 +212,8 @@ public final class Knot extends FabricLauncherBase {
 
 	@Override
 	public String getEntrypoint() {
-		return provider.getEntrypoint();
+		String sysProp = System.getProperty("fabric.loader.entrypoint");
+		return sysProp != null ? sysProp : provider.getEntrypoint();
 	}
 
 	public static void main(String[] args) {
