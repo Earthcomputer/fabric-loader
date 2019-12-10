@@ -181,7 +181,9 @@ public class MinecraftGameProvider implements GameProvider {
 
 	@Override
 	public void launch(ClassLoader loader) {
-		String targetClass = entrypoint;
+		String targetClass = System.getProperty("fabric.loader.entrypoint");
+		if (targetClass == null)
+			targetClass = entrypoint;
 
 		if (envType == EnvType.CLIENT && targetClass.contains("Applet")) {
 			targetClass = "net.fabricmc.loader.entrypoint.applet.AppletMain";
