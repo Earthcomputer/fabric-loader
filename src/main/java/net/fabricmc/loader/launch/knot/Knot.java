@@ -216,6 +216,10 @@ public final class Knot extends FabricLauncherBase {
 		return sysProp != null ? sysProp : provider.getEntrypoint();
 	}
 
+	public ClassLoader getClassLoader() {
+		return (ClassLoader) classLoader;
+	}
+
 	public static void main(String[] args) {
 		new Knot(null, null).init(args);
 	}
