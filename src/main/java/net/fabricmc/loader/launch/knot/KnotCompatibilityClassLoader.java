@@ -23,9 +23,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 
 class KnotCompatibilityClassLoader extends URLClassLoader implements KnotClassLoaderInterface {
 	private final KnotClassDelegate delegate;
+
+	private List<String> classLoaderExclusions = new ArrayList<>();
+
+	@Override
+	public void addClassLoaderExclusion(String prefix) {
+		classLoaderExclusions.add(prefix);
+	}
 
 	KnotCompatibilityClassLoader(boolean isDevelopment, EnvType envType, GameProvider provider) {
 		super(new URL[0], KnotCompatibilityClassLoader.class.getClassLoader());
@@ -49,7 +58,7 @@ class KnotCompatibilityClassLoader extends URLClassLoader implements KnotClassLo
 		synchronized (getClassLoadingLock(name)) {
 			Class<?> c = findLoadedClass(name);
 
-			if (c == null) {
+			if (c == null && classLoaderExclusions.stream().noneMatch(name::startsWith)) {
 				byte[] input = delegate.loadClassData(name, resolve);
 				if (input != null) {
 					KnotClassDelegate.Metadata metadata = delegate.getMetadata(name, getResource(delegate.getClassFileName(name)));

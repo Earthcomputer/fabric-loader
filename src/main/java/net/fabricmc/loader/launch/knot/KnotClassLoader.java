@@ -24,10 +24,20 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.SecureClassLoader;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Objects;
 
 class KnotClassLoader extends SecureClassLoader implements KnotClassLoaderInterface {
+
+	private List<String> classLoaderExclusions = new ArrayList<>();
+
+	@Override
+	public void addClassLoaderExclusion(String prefix) {
+		classLoaderExclusions.add(prefix);
+	}
+
 	private static class DynamicURLClassLoader extends URLClassLoader {
 		private DynamicURLClassLoader(URL[] urls) {
 			super(urls, new DummyClassLoader());
@@ -139,7 +149,7 @@ class KnotClassLoader extends SecureClassLoader implements KnotClassLoaderInterf
 		synchronized (getClassLoadingLock(name)) {
 			Class<?> c = findLoadedClass(name);
 
-			if (c == null && !name.startsWith("com.google.gson.")) { // FIXME: remove the GSON exclusion once loader stops using it (or repackages it)
+			if (c == null && !name.startsWith("com.google.gson.") && classLoaderExclusions.stream().noneMatch(name::startsWith)) { // FIXME: remove the GSON exclusion once loader stops using it (or repackages it)
 				byte[] input = delegate.loadClassData(name, resolve);
 				if (input != null) {
 					KnotClassDelegate.Metadata metadata = delegate.getMetadata(name, urlLoader.getResource(delegate.getClassFileName(name)));

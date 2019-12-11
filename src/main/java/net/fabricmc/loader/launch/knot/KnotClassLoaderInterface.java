@@ -25,4 +25,5 @@ interface KnotClassLoaderInterface {
 	boolean isClassLoaded(String name);
 	void addURL(URL url);
 	InputStream getResourceAsStream(String filename, boolean skipOriginalLoader) throws IOException;
+	void addClassLoaderExclusion(String prefix);
 }
