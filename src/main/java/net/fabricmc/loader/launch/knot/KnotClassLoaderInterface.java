@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-interface KnotClassLoaderInterface {
+public interface KnotClassLoaderInterface {
 	KnotClassDelegate getDelegate();
 	boolean isClassLoaded(String name);
 	void addURL(URL url);
