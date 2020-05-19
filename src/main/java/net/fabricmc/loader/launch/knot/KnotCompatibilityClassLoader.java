@@ -59,7 +59,7 @@ class KnotCompatibilityClassLoader extends URLClassLoader implements KnotClassLo
 			Class<?> c = findLoadedClass(name);
 
 			if (c == null && classLoaderExclusions.stream().noneMatch(name::startsWith)) {
-				byte[] input = delegate.loadClassData(name, resolve);
+				byte[] input = delegate.getPostMixinClassByteArray(name);
 				if (input != null) {
 					KnotClassDelegate.Metadata metadata = delegate.getMetadata(name, getResource(delegate.getClassFileName(name)));
 
