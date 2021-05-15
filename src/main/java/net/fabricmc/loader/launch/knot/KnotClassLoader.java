@@ -88,6 +88,11 @@ class KnotClassLoader extends SecureClassLoader implements KnotClassLoaderInterf
 	}
 
 	@Override
+	protected URL findResource(String name) {
+		return urlLoader.findResource(name);
+	}
+
+	@Override
 	public InputStream getResourceAsStream(String name) {
 		Objects.requireNonNull(name);
 
@@ -149,7 +154,9 @@ class KnotClassLoader extends SecureClassLoader implements KnotClassLoaderInterf
 		synchronized (getClassLoadingLock(name)) {
 			Class<?> c = findLoadedClass(name);
 
-			if (c == null && !name.startsWith("com.google.gson.") && !name.startsWith("java.") && classLoaderExclusions.stream().noneMatch(name::startsWith)) { // FIXME: remove the GSON exclusion once loader stops using it (or repackages it)
+			// FIXME: remove the GSON exclusion once loader stops using gson.
+			// We now repackage Gson's JsonReader so removal is now possible
+			if (c == null && !name.startsWith("com.google.gson.") && !name.startsWith("java.") && classLoaderExclusions.stream().noneMatch(name::startsWith)) {
 				byte[] input = delegate.getPostMixinClassByteArray(name);
 				if (input != null) {
 					KnotClassDelegate.Metadata metadata = delegate.getMetadata(name, urlLoader.getResource(delegate.getClassFileName(name)));
